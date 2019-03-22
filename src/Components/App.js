@@ -21,7 +21,7 @@ const calcPercentage = (current, total) => (100 * current) / total;
 const turnaroundPercentage = calcPercentage(turnaroundTime, totalDayTime);
 
 const usagePercentage = scheduledTime =>
-  scheduledTime.reduce((acc, val) => acc + val.percentage, 0);
+  Math.floor(scheduledTime.reduce((acc, val) => acc + val.percentage, 0));
 
 const App = () => {
   const [aircrafts, setAircrafts] = useState([]);
@@ -53,10 +53,65 @@ const App = () => {
       ...rotations,
       [aircraft]: {
         flights: [],
+        freeTime: [
+          {
+            start: 0,
+            end: 86400,
+            percentage: 100,
+          },
+        ],
         scheduledTime: [],
       },
     };
     setRotations(newRotations);
+  };
+
+  const makeFreeTime = scheduledTime => {
+    const freeTimeObj = scheduledTime.reduce(
+      (acc, val) => {
+        if (val.start - acc.lastTime <= 0) {
+          return acc;
+        }
+        if (val.type === typeFlight) {
+          const obj = {
+            start: acc.lastTime,
+            end: val.start,
+            origin: val.destination,
+          };
+          obj.percentage = calcPercentage(obj.end - obj.start, totalDayTime);
+          acc.freeTime.push(obj);
+        } else if (val.type === typeTurnaround) {
+          acc.lastTime = val.end;
+        }
+        return acc;
+      },
+      {
+        lastTime: 0,
+        freeTime: [],
+      },
+    );
+    const { lastTime, freeTime } = freeTimeObj;
+    if (lastTime <= totalDayTime) {
+      freeTime.push({
+        start: lastTime,
+        end: totalDayTime,
+        percentage: calcPercentage(totalDayTime - lastTime, totalDayTime),
+      });
+    }
+    return freeTime;
+  };
+
+  const makeAirCraftRotation = aircraftRotation => {
+    const { scheduledTime } = aircraftRotation;
+    const freeTime = makeFreeTime(scheduledTime);
+    const newAircraftRotation = {
+      ...aircraftRotation,
+      freeTime,
+    };
+    return {
+      ...rotations,
+      [selectedAircraft]: newAircraftRotation,
+    };
   };
 
   const onAircraftClick = aircraft => {
@@ -88,23 +143,27 @@ const App = () => {
       end: arrivaltime,
       percentage: calcPercentage(arrivaltime - departuretime, totalDayTime),
     };
-    const startTurnaroundTime = formattedSchedule.end + 1;
+    const newScheduleBlock = [formattedSchedule];
+    const startTurnaroundTime = formattedSchedule.end;
     const endTurnaroundTime = formattedSchedule.end + turnaroundTime;
-    const turnaroundObj = {
-      id: ident,
-      type: typeTurnaround,
-      start:
-        startTurnaroundTime <= totalDayTime
-          ? startTurnaroundTime
-          : totalDayTime,
-      end: endTurnaroundTime <= totalDayTime ? endTurnaroundTime : totalDayTime,
-      origin: destination,
-      percentage: turnaroundPercentage,
-    };
+    if (endTurnaroundTime - startTurnaroundTime) {
+      const turnaroundObj = {
+        id: ident,
+        type: typeTurnaround,
+        start:
+          startTurnaroundTime <= totalDayTime
+            ? startTurnaroundTime
+            : totalDayTime,
+        end:
+          endTurnaroundTime <= totalDayTime ? endTurnaroundTime : totalDayTime,
+        origin: destination,
+        percentage: turnaroundPercentage,
+      };
+      newScheduleBlock.push(turnaroundObj);
+    }
     const newScheduledTime = [
       ...aircraftScheduledTime,
-      formattedSchedule,
-      turnaroundObj,
+      ...newScheduleBlock,
     ].sort(timeSort);
     const currentPercentage = usagePercentage(newScheduledTime);
     const newUsageList = {
@@ -117,10 +176,7 @@ const App = () => {
       flights: newRotationFlights,
       scheduledTime: newScheduledTime,
     };
-    const newRotation = {
-      ...rotations,
-      [selectedAircraft]: newAircraftRotation,
-    };
+    const newRotation = makeAirCraftRotation(newAircraftRotation);
     setRotations(newRotation);
   };
 
@@ -149,10 +205,7 @@ const App = () => {
       flights: newAircraftFlights,
       scheduledTime: newScheduledTime,
     };
-    const newRotation = {
-      ...rotations,
-      [selectedAircraft]: newAircraftRotation,
-    };
+    const newRotation = makeAirCraftRotation(newAircraftRotation);
     setRotations(newRotation);
   };
 
