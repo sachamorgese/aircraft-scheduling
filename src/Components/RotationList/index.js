@@ -3,15 +3,15 @@ import RotationDetail from '../RotationDetail';
 
 
 const RotationList = (props) => {
-  const { className, onElementClick, list } = props;
+  const { className, onElementClick, list: { flights } } = props;
   return <div className={className}>
     <ul>
       {
-        list.map(child => (
+        flights && flights.map(child => (
           <RotationDetail
             onElementClick={onElementClick}
             data={child}
-            key={child.id}
+            key={child.ident}
           />
         ))
       }

@@ -1,13 +1,15 @@
 import React from "react";
 
 const Flight = (props) => {
-  const { onElementClick, data: { id, destination, origin, readable_arrival, readable_departure } } = props;
+  const { onElementClick, data: { id, destination, origin, readable_arrival: readableArrival, readable_departure: readableDeparture } } = props;
   
   return (
-    <li onClick={onElementClick}>
-      <span>{ id }</span>
-      <span>{ `${origin}, ${destination}` }</span>
-      <span>{ `${readable_departure}, ${readable_arrival}` }</span>
+    <li>
+      <button onClick={onElementClick} type="button">
+        <span>{ id }</span>
+        <span>{ `${origin}, ${destination}` }</span>
+        <span>{ `${readableDeparture}, ${readableArrival}` }</span>
+      </button>
     </li>
   )
 };

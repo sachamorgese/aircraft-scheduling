@@ -10,7 +10,7 @@ const FlightsList = (props) => {
           <Flight
             data={child}
             onElementClick={() => onElementClick(child)}
-            key={child.id}
+            key={child.ident}
           />
         ))
       }
