@@ -5,6 +5,7 @@ cd sacha-test-scheduling
 yarn install
 yarn start
 ```
+Tested only on Chrome
 
 ## HowTo
 * Click on the aircraft to fetch a list of flights
@@ -16,7 +17,7 @@ Notes
 * I decided to fetch the files from the gist directly instead of dealing with 25 pages at the time making requests using the offset. This was mainly to save time.
 * Since the only available aircraft had an origin which did not appear in the remaining flights, I decided to make it possible to select any origin as first flight.
 * For the same reason (time) I decided it's not possible to insert flights before scheduled flights.
-
+* The style is barebone but responsive (although desktop only)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

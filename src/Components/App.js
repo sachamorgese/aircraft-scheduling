@@ -4,68 +4,26 @@ import AircraftsList from './AircraftsList';
 import FlightsList from './FlightsList';
 import RotationColumn from './RotationColumn';
 import Calendar from './Calendar';
+import {
+  typeFlight,
+  typeTurnaround,
+  turnaroundTime,
+  totalDayTime,
+  timeSort,
+  flightsSort,
+  calcPercentage,
+  turnaroundPercentage,
+  usagePercentage,
+  todaysDate,
+} from './utils';
 
-const typeFlight = 'Flight';
-const typeTurnaround = 'Turnaround';
-const turnaroundTime = 2400;
-const totalDayTime = 86400;
-
-const timeSort = (a, b) => a.start - b.start;
-const flightsSort = (a, b) => {
-  const value = a.departuretime - b.departuretime;
-  return value === 0 ? a.arrivaltime - b.arrivaltime : value;
-};
-
-const calcPercentage = (current, total) => (100 * current) / total;
-
-const turnaroundPercentage = calcPercentage(turnaroundTime, totalDayTime);
-
-const usagePercentage = scheduledTime =>
-  Math.floor(scheduledTime.reduce((acc, val) => acc + val.percentage, 0));
-
-const getTodaysDate = () => {
-  const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-
-  const dayEndObj = {
-    1: 'st',
-    21: 'st',
-    31: 'st',
-    2: 'nd',
-    22: 'nd',
-    3: 'rd',
-    23: 'rd',
-  };
-  const dayEndArray = [1, 2, 3, 21, 22, 23, 31];
-
-  const today = new Date();
-
-  const todayDay = today.getDate();
-  const dd = `${todayDay}${
-    dayEndArray.includes(todayDay) ? dayEndObj[todayDay] : 'th'
-  }`;
-  const mm = months[today.getMonth()];
-  const yyyy = today.getFullYear();
-  return `${dd} ${mm} ${yyyy}`;
-};
-
-const todaysDate = getTodaysDate();
-
+// Since I decided not to use redux, all the state is included in App
+// Using hooks to have a cleaner code
 const App = () => {
+  // State
   const [aircrafts, setAircrafts] = useState([]);
   const [flights, setFlights] = useState([]);
+  const [flightsLoading, setFlightsLoading] = useState(false);
   const [rotations, setRotations] = useState({});
   const [selectedAircraft, setSelectedAircraft] = useState('');
   const [usageList, setUsageList] = useState({});
@@ -88,6 +46,7 @@ const App = () => {
     );
   }, []);
 
+  // Initialize the rotation object ()
   const makeNewRotation = aircraft => {
     const newRotations = {
       ...rotations,
@@ -107,6 +66,7 @@ const App = () => {
     setRotations(newRotations);
   };
 
+  // Calculates the "free time" an aircraft has
   const makeFreeTime = scheduledTime => {
     const freeTimeObj = scheduledTime.reduce(
       (acc, val) => {
@@ -156,9 +116,10 @@ const App = () => {
     };
   };
 
-  const onAircraftClick = aircraft => {
+  const onAircraftClick = async aircraft => {
     // In a real case scenario this would accept a value to fetch data based on the aircraft
-    fetchData(
+    setFlightsLoading(true);
+    await fetchData(
       'https://gist.githubusercontent.com/nickbnf/77dcd76a26c57fa0d005187b6808799e/raw/7db99dd58cabbcdd25c65ea974a19df4f404b8e4/flights.json',
       setFlights,
       flightsSort,
@@ -167,6 +128,7 @@ const App = () => {
     if (!rotations[aircraft]) {
       makeNewRotation(aircraft);
     }
+    setFlightsLoading(false);
   };
 
   const onFlightClick = target => {
@@ -282,6 +244,7 @@ const App = () => {
         selectedAircraft={selectedAircraft}
       />
       <FlightsList
+        flightsLoading={flightsLoading}
         flightList={filterFlights()}
         onElementClick={onFlightClick}
       />

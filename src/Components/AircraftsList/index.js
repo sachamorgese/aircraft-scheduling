@@ -7,14 +7,18 @@ const AircraftsList = props => {
     <div className="SideListLeft">
       <span>Aircrafts</span>
       <ul className="SideListLeft__list">
-        {aircraftList.map(child => (
-          <Aircraft
-            data={child}
-            onElementClick={() => onElementClick(child.ident)}
-            key={child.ident}
-            usage={usageList[child.ident]}
-          />
-        ))}
+        {aircraftList.length ? (
+          aircraftList.map(child => (
+            <Aircraft
+              data={child}
+              onElementClick={() => onElementClick(child.ident)}
+              key={child.ident}
+              usage={usageList[child.ident]}
+            />
+          ))
+        ) : (
+          <li className="Loading">Loading...</li>
+        )}
       </ul>
     </div>
   );

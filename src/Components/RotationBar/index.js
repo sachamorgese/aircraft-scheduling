@@ -1,6 +1,5 @@
 import React from 'react';
-
-const timeSort = (a, b) => a.start - b.start;
+import { timeSort } from '../utils';
 
 const makeOrderedDiv = rotation => {
   const { freeTime, scheduledTime } = rotation;
@@ -12,7 +11,6 @@ const makeOrderedDiv = rotation => {
 
 const RotationBar = ({ rotation }) => {
   const rotationList = makeOrderedDiv(rotation);
-  console.log(rotationList);
   return (
     <>
       <div className="RotationBarText">
