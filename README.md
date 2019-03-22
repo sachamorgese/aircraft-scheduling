@@ -1,3 +1,23 @@
+## Installation
+```
+git clone https://TheOmegaBlack@bitbucket.org/TheOmegaBlack/sacha-test-scheduling.git
+cd sacha-test-scheduling
+yarn install
+yarn start
+```
+
+## HowTo
+* Click on the aircraft to fetch a list of flights
+* Click on a flight to put it in the rotation
+* Click on an element in rotation to delete it and all the elements after it
+* The app will only show flights that can be selected next
+
+Notes
+* I decided to fetch the files from the gist directly instead of dealing with 25 pages at the time making requests using the offset. This was mainly to save time.
+* Since the only available aircraft had an origin which did not appear in the remaining flights, I decided to make it possible to select any origin as first flight.
+* For the same reason (time) I decided it's not possible to insert flights before scheduled flights.
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
