@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
+import './App.scss';
 import AircraftsList from './AircraftsList';
 import FlightsList from './FlightsList';
 import RotationColumn from './RotationColumn';
@@ -22,6 +22,46 @@ const turnaroundPercentage = calcPercentage(turnaroundTime, totalDayTime);
 
 const usagePercentage = scheduledTime =>
   Math.floor(scheduledTime.reduce((acc, val) => acc + val.percentage, 0));
+
+const getTodaysDate = () => {
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  const dayEndObj = {
+    1: 'st',
+    21: 'st',
+    31: 'st',
+    2: 'nd',
+    22: 'nd',
+    3: 'rd',
+    23: 'rd',
+  };
+  const dayEndArray = [1, 2, 3, 21, 22, 23, 31];
+
+  const today = new Date();
+
+  const todayDay = today.getDate();
+  const dd = `${todayDay}${
+    dayEndArray.includes(todayDay) ? dayEndObj[todayDay] : 'th'
+  }`;
+  const mm = months[today.getMonth()];
+  const yyyy = today.getFullYear();
+  return `${dd} ${mm} ${yyyy}`;
+};
+
+const todaysDate = getTodaysDate();
 
 const App = () => {
   const [aircrafts, setAircrafts] = useState([]);
@@ -58,6 +98,7 @@ const App = () => {
             start: 0,
             end: 86400,
             percentage: 100,
+            type: 'Free',
           },
         ],
         scheduledTime: [],
@@ -76,7 +117,7 @@ const App = () => {
           const obj = {
             start: acc.lastTime,
             end: val.start,
-            origin: val.destination,
+            type: 'Free',
           };
           obj.percentage = calcPercentage(obj.end - obj.start, totalDayTime);
           acc.freeTime.push(obj);
@@ -96,6 +137,7 @@ const App = () => {
         start: lastTime,
         end: totalDayTime,
         percentage: calcPercentage(totalDayTime - lastTime, totalDayTime),
+        type: 'Free',
       });
     }
     return freeTime;
@@ -228,20 +270,19 @@ const App = () => {
 
   return (
     <div className="App">
-      <Calendar />
+      <Calendar date={todaysDate} />
       <AircraftsList
-        className="sideListLeft"
-        list={aircrafts}
+        aircraftList={aircrafts}
         onElementClick={onAircraftClick}
         usageList={usageList}
       />
       <RotationColumn
-        list={rotations[selectedAircraft] || []}
+        rotation={rotations[selectedAircraft] || []}
         onElementClick={onRotationClick}
+        selectedAircraft={selectedAircraft}
       />
       <FlightsList
-        className="sideListRight"
-        list={filterFlights()}
+        flightList={filterFlights()}
         onElementClick={onFlightClick}
       />
     </div>

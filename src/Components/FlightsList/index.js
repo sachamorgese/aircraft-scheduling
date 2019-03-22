@@ -1,21 +1,22 @@
 import React from 'react';
 import Flight from '../Flight';
 
-const FlightsList = (props) => {
-  const { className, onElementClick, list } = props;
-  return <div className={className}>
+const FlightsList = props => {
+  const { onElementClick, flightList } = props;
+  return (
+    <div className="SideListRight">
+      <span>Flights</span>
       <ul>
-      {
-        list.map(child => (
+        {flightList.map(child => (
           <Flight
             data={child}
             onElementClick={() => onElementClick(child)}
             key={child.ident}
           />
-        ))
-      }
+        ))}
       </ul>
     </div>
+  );
 };
 
 export default FlightsList;

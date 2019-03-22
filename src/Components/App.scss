@@ -1,0 +1,213 @@
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.App {
+  background-color: #1a1a1d;
+  display: grid;
+  height: 100vh;
+  min-width: 1000px;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  grid-template-rows: 10% auto;
+}
+
+.Calendar {
+  color: #c3073f;
+  grid-column: 1 / 4;
+  grid-row: 1 / 2;
+  text-align: center;
+  font-family: courier, monospace;
+  font-size: 20px;
+  font-weight: bold;
+  padding-top: 35px;
+
+  &__date {
+    margin: 0 10px;
+  }
+}
+
+.CentralColumn,
+.SideListLeft,
+.SideListRight {
+  > span {
+    color: #c3073f;
+    display: block;
+    font-family: courier, monospace;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  button {
+    cursor: pointer;
+  }
+}
+
+.SideListLeft,
+.SideListRight {
+  padding-top: 20px;
+
+  ul {
+    background-color: #4e4e50;
+    border: 3px solid #6f2232;
+    height: 75vh;
+    overflow: scroll;
+    margin: 0 30px;
+
+    li {
+      width: 100%;
+      height: 15vh;
+    }
+
+    li > button {
+      background: #c3073f;
+      border: 0;
+      border-bottom: 3px solid #6f2232;
+      color: #1a1a1d;
+      font-size: 20px;
+      height: 100%;
+      outline: none;
+      width: 100%;
+    }
+
+    li > button > span {
+      display: block;
+    }
+  }
+}
+
+.CentralColumn {
+  > .CentralColumn__rotationSpan {
+    padding-bottom: 20px;
+    border-bottom: solid 1px;
+    margin: 0 auto 19px;
+    width: 70%;
+
+    &--invisible {
+      visibility: hidden;
+    }
+  }
+
+  ul {
+    height: 65vh;
+    overflow: scroll;
+
+    li {
+      border: 3px solid #6f2232;
+      width: 100%;
+      height: 15vh;
+      margin-bottom: 15px;
+    }
+
+    li > button {
+      background: #c3073f;
+      border: 0;
+      color: #1a1a1d;
+      font-size: 20px;
+      height: 100%;
+      outline: none;
+      width: 100%;
+      padding: 10px 20px;
+      position: relative;
+      text-align: left;
+    }
+
+    li > button > span:first-child {
+      top: -15px;
+      position: relative;
+    }
+
+    .spanArrowContainer {
+      display: flex;
+      margin-bottom: 5px;
+      justify-content: space-between;
+    }
+
+    .arrowImage {
+      width: 40px;
+      height: 40px;
+    }
+
+    .spanContainer > span {
+      display: block;
+    }
+  }
+}
+
+.SideListLeft {
+  ul > li > button > span {
+    background-color: #4e4e50;
+    height: 28%;
+    margin: 0 auto;
+    width: 60%;
+
+    &:first-child {
+      padding-top: 15px;
+    }
+  }
+}
+
+.SideListRight {
+  ul > li > button {
+    padding: 10px 20px;
+    position: relative;
+
+    > span:first-child {
+      top: -15px;
+      position: relative;
+    }
+
+    div.spanContainer {
+      display: flex;
+      margin-bottom: 5px;
+      justify-content: space-between;
+    }
+  }
+}
+
+.RotationBarText {
+  border-bottom: 3px solid #6f2232;
+  display: flex;
+  margin-top: 2vh;
+  height: 2vh;
+  
+  > span {
+    color: #c3073f;
+    display: block;
+    font-family: courier, monospace;
+    font-size: 20px;
+    width: 100%;
+  }
+}
+
+.RotationBar {
+  border: 3px solid #6f2232;
+  display: flex;
+  height: 10vh;
+  margin-top: 2vh;
+  width: 100%;
+
+    .Free {
+      background: #4e4e50;
+    }
+
+    .Turnaround {
+      background: #c3079d;
+    }
+
+    .Flight {
+      background: #9dc307;
+    }
+
+}
